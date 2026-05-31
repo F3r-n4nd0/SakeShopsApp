@@ -33,6 +33,10 @@ The networking layer lives in `SakeShops/Core/Networking/` and is protocol-based
 | `URLSessionHTTPClient` | Concrete implementation. Takes a `baseURL`, an optional `URLSession`, and an optional `JSONDecoder` at init. Builds the `URLRequest`, executes it, validates the HTTP status, and decodes the response. |
 | `NetworkError` | Typed error enum: `.invalidURL`, `.invalidResponse`, `.statusCode(Int, Data)`, `.decoding(DecodingError)`, `.underlying(any Error)`. |
 
+### Pagination
+
+`ShopsEndpoint` encodes `page` and `pageSize` as `page` / `page_size` query items. `ShopListServiceProtocol` exposes `fetchShops(page: Int, pageSize: Int)`. Callers are responsible for tracking the current page — the service and endpoint are stateless.
+
 ### Adding a new endpoint
 
 1. Create a type that conforms to `Endpoint` and set `path` and `method`. Override `queryItems`, `headers`, or `body` only when needed.

@@ -46,17 +46,6 @@
                ReferencedContainer = "container:SakeShops.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "50A140612FC9C402009E86CD"
-               BuildableName = "SakeShopsUITests"
-               BlueprintName = "SakeShopsUITests"
-               ReferencedContainer = "container:SakeShops.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

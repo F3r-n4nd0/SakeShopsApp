@@ -3,7 +3,7 @@
 struct StubShopListService: ShopListServiceProtocol {
     var result: Result<[SakeShop], ShopListError> = .success([])
 
-    func fetchShops() async throws -> [SakeShop] {
+    func fetchShops(page: Int, pageSize: Int) async throws -> [SakeShop] {
         try result.get()
     }
 }

@@ -1,0 +1,30 @@
+{
+  "configurations" : [
+    {
+      "id" : "0E11DC89-CBCA-4365-B565-8569F9AE1547",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:SakeShops.xcodeproj",
+      "identifier" : "50A1404A2FC9C400009E86CD",
+      "name" : "SakeShops"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : false,
+      "target" : {
+        "containerPath" : "container:SakeShops.xcodeproj",
+        "identifier" : "50A140572FC9C401009E86CD",
+        "name" : "SakeShopsTests"
+      }
+    }
+  ],
+  "version" : 1
+}

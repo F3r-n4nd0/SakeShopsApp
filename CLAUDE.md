@@ -45,9 +45,9 @@ Protocol-based, async/await. The central abstraction is `HTTPClient: Sendable` w
 
 Each feature defines its own error enum and service protocol. Example flow for `ShopList`:
 
-1. `ShopsEndpoint: Endpoint` — defines path `/shops` and method `.get`
-2. `ShopListServiceProtocol` — `func fetchShops() async throws -> [SakeShop]`
-3. `ShopListService` — conforms to the protocol; calls `client.send(ShopsEndpoint())` and maps `NetworkError` → `ShopListError` (`.fetchFailed` / `.decodingFailed`)
+1. `ShopsEndpoint: Endpoint` — defines path `/shops`, method `.get`, and encodes `page` + `pageSize` as `page` / `page_size` query items.
+2. `ShopListServiceProtocol` — `func fetchShops(page: Int, pageSize: Int) async throws -> [SakeShop]`
+3. `ShopListService` — conforms to the protocol; calls `client.send(ShopsEndpoint(page:pageSize:))` and maps `NetworkError` → `ShopListError` (`.fetchFailed` / `.decodingFailed`). Callers own cursor state.
 
 Callers depend on `any ShopListServiceProtocol`, never the concrete type.
 

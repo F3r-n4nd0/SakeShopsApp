@@ -1,5 +1,5 @@
 protocol ShopListServiceProtocol {
-    func fetchShops() async throws -> [SakeShop]
+    func fetchShops(page: Int, pageSize: Int) async throws -> [SakeShop]
 }
 
 struct ShopListService: ShopListServiceProtocol {
@@ -9,9 +9,9 @@ struct ShopListService: ShopListServiceProtocol {
         self.client = client
     }
 
-    func fetchShops() async throws -> [SakeShop] {
+    func fetchShops(page: Int, pageSize: Int) async throws -> [SakeShop] {
         do {
-            return try await client.send(ShopsEndpoint())
+            return try await client.send(ShopsEndpoint(page: page, pageSize: pageSize))
         } catch let error as NetworkError {
             switch error {
             case .decoding(let decodingError):
