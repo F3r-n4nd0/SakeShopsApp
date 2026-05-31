@@ -60,17 +60,7 @@ func makeHTTPResponse(
 }
 
 func makeSakeShopsData(count: Int = 1) -> Data {
-    let shop = """
-    {
-        "name": "Test Shop",
-        "description": "A test shop",
-        "picture": null,
-        "rating": 4.5,
-        "address": "123 Test St",
-        "coordinates": [35.6762, 139.6503],
-        "google_maps_link": "https://maps.app.goo.gl/test",
-        "website": "https://example.com"
-    }
-    """
-    return Data("[\(Array(repeating: shop, count: count).joined(separator: ","))]".utf8)
+    let url = Bundle(for: MockURLProtocol.self).url(forResource: "shops", withExtension: "json")!
+    let all = try! JSONSerialization.jsonObject(with: Data(contentsOf: url)) as! [[String: Any]]
+    return try! JSONSerialization.data(withJSONObject: Array(all.prefix(count)))
 }

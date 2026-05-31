@@ -52,7 +52,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "50A140612FC9C402009E86CD"
-               BuildableName = "SakeShopsUITests.xctest"
+               BuildableName = "SakeShopsUITests"
                BlueprintName = "SakeShopsUITests"
                ReferencedContainer = "container:SakeShops.xcodeproj">
             </BuildableReference>

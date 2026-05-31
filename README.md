@@ -17,7 +17,6 @@ An iOS/iPadOS app for discovering sake shops.
 ```
 SakeShops/               App source (SwiftUI)
 SakeShopsTests/          Unit tests (Swift Testing)
-SakeShopsUITests/        UI tests (XCTest)
 SakeShops.xcodeproj/     Xcode project
 ```
 
@@ -53,15 +52,10 @@ From the command line:
 ```bash
 # Build
 xcodebuild -project SakeShops.xcodeproj -scheme SakeShops \
-  -destination 'platform=iOS Simulator,name=iPhone 16' build
+  -destination 'platform=iOS Simulator,name=iPhone 17' build
 
 # Unit tests
 xcodebuild test -project SakeShops.xcodeproj -scheme SakeShops \
-  -destination 'platform=iOS Simulator,name=iPhone 16' \
+  -destination 'platform=iOS Simulator,name=iPhone 17' \
   -only-testing:SakeShopsTests
-
-# UI tests
-xcodebuild test -project SakeShops.xcodeproj -scheme SakeShops \
-  -destination 'platform=iOS Simulator,name=iPhone 16' \
-  -only-testing:SakeShopsUITests
 ```

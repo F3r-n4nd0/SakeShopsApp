@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-SakeShops is an iOS/iPadOS SwiftUI app for discovering sake shops, targeting iOS 18.0+. 
+SakeShops is an iOS/iPadOS SwiftUI app for discovering sake shops, targeting iOS 18.0+.
 
 - Bundle ID: `fluna.personal.SakeShops`
 - Supported devices: iPhone + iPad (`TARGETED_DEVICE_FAMILY = "1,2"`)
@@ -14,20 +14,20 @@ SakeShops is an iOS/iPadOS SwiftUI app for discovering sake shops, targeting iOS
 ```bash
 # Build
 xcodebuild -project SakeShops.xcodeproj -scheme SakeShops \
-  -destination 'platform=iOS Simulator,name=iPhone 16' build
+  -destination 'platform=iOS Simulator,name=iPhone 17' build
 
 # Run all unit tests
 xcodebuild test -project SakeShops.xcodeproj -scheme SakeShops \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -only-testing:SakeShopsTests
+  -destination 'platform=iOS Simulator,name=iPhone 17' -only-testing:SakeShopsTests
 
 # Run a single test suite
 xcodebuild test -project SakeShops.xcodeproj -scheme SakeShops \
-  -destination 'platform=iOS Simulator,name=iPhone 16' \
+  -destination 'platform=iOS Simulator,name=iPhone 17' \
   -only-testing:SakeShopsTests/ShopListServiceTests
 
 # Run a single test
 xcodebuild test -project SakeShops.xcodeproj -scheme SakeShops \
-  -destination 'platform=iOS Simulator,name=iPhone 16' \
+  -destination 'platform=iOS Simulator,name=iPhone 17' \
   -only-testing:SakeShopsTests/ShopListServiceTests/fetchShops_returnsShops_onSuccess
 ```
 
@@ -57,14 +57,14 @@ Callers depend on `any ShopListServiceProtocol`, never the concrete type.
 
 ## Testing conventions
 
-Unit tests use **Swift Testing**: `import Testing`, `@Suite`, `@Test`, `#expect`, `#require`. UI tests use XCTest.
+Unit tests use **Swift Testing**: `import Testing`, `@Suite`, `@Test`, `#expect`, `#require`.
 
 ### Test infrastructure (`SakeShopsTests/Helpers/`)
 
 - **`StubHTTPClient`** (`@unchecked Sendable`) — set `stub.result: Result<Data, NetworkError>` before calling; decodes the data just like the real client.
 - **`StubShopListService`** — set `stub.result: Result<[SakeShop], ShopListError>`.
 - **`MockURLProtocol`** — intercepts `URLSession` requests; set `MockURLProtocol.requestHandler` per test.
-- **`makeSakeShopsData(count:)`** — produces valid `[SakeShop]` JSON for a given count.
+- **`makeSakeShopsData(count:)`** — loads `SakeShopsTests/Resources/shops.json` from the test bundle and returns the first `count` entries re-encoded as `Data`.
 
 **Stubs live only in the test target**, never in the app target.
 
