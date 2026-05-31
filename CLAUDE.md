@@ -4,35 +4,68 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-SakeShops is an iOS/iPadOS SwiftUI app targeting iOS 18.0+, written in Swift. The project is at the initial scaffold stage — only the Xcode template boilerplate exists so far.
+SakeShops is an iOS/iPadOS SwiftUI app for discovering sake shops, targeting iOS 18.0+. 
 
 - Bundle ID: `fluna.personal.SakeShops`
 - Supported devices: iPhone + iPad (`TARGETED_DEVICE_FAMILY = "1,2"`)
 
 ## Build & Test
 
-Build from the command line (requires Xcode installed):
-
 ```bash
-# Build for simulator
-xcodebuild -project SakeShops.xcodeproj -scheme SakeShops -destination 'platform=iOS Simulator,name=iPhone 16' build
+# Build
+xcodebuild -project SakeShops.xcodeproj -scheme SakeShops \
+  -destination 'platform=iOS Simulator,name=iPhone 16' build
 
-# Run unit tests (Swift Testing)
-xcodebuild test -project SakeShops.xcodeproj -scheme SakeShops -destination 'platform=iOS Simulator,name=iPhone 16' -only-testing:SakeShopsTests
+# Run all unit tests
+xcodebuild test -project SakeShops.xcodeproj -scheme SakeShops \
+  -destination 'platform=iOS Simulator,name=iPhone 16' -only-testing:SakeShopsTests
 
-# Run UI tests
-xcodebuild test -project SakeShops.xcodeproj -scheme SakeShops -destination 'platform=iOS Simulator,name=iPhone 16' -only-testing:SakeShopsUITests
+# Run a single test suite
+xcodebuild test -project SakeShops.xcodeproj -scheme SakeShops \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
+  -only-testing:SakeShopsTests/ShopListServiceTests
 
-# Run a single test by name
-xcodebuild test -project SakeShops.xcodeproj -scheme SakeShops -destination 'platform=iOS Simulator,name=iPhone 16' -only-testing:SakeShopsTests/SakeShopsTests/example
+# Run a single test
+xcodebuild test -project SakeShops.xcodeproj -scheme SakeShops \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
+  -only-testing:SakeShopsTests/ShopListServiceTests/fetchShops_returnsShops_onSuccess
 ```
 
-## Code Structure
+## Architecture
 
-- `SakeShops/` — app source (entry point `SakeShopsApp.swift`, views starting with `ContentView.swift`)
-- `SakeShopsTests/` — unit tests using Swift Testing (`import Testing`, `@Test` functions, `#expect`)
-- `SakeShopsUITests/` — UI tests using XCTest
+### Networking layer (`Core/Networking/`)
 
-## Testing Conventions
+Protocol-based, async/await. The central abstraction is `HTTPClient: Sendable` with a single generic `send<T: Decodable>(_ endpoint: some Endpoint) async throws -> T` method.
 
-Unit tests use the **Swift Testing** framework (not XCTest): use `@Test`, `#expect(...)`, and `#require(...)`. UI tests continue to use XCTest.
+- **`Endpoint`** protocol — any request is a type conforming to `Endpoint` (path, method, headers, queryItems, body). Default implementations provided for all optional fields.
+- **`URLSessionHTTPClient`** — real implementation; takes a `baseURL` + optional `URLSession` and `JSONDecoder` at init.
+- **`NetworkError`** — maps HTTP/decoding/connection failures into typed cases: `.statusCode(Int, Data)`, `.decoding(DecodingError)`, `.underlying(any Error)`.
+
+### Feature services
+
+Each feature defines its own error enum and service protocol. Example flow for `ShopList`:
+
+1. `ShopsEndpoint: Endpoint` — defines path `/shops` and method `.get`
+2. `ShopListServiceProtocol` — `func fetchShops() async throws -> [SakeShop]`
+3. `ShopListService` — conforms to the protocol; calls `client.send(ShopsEndpoint())` and maps `NetworkError` → `ShopListError` (`.fetchFailed` / `.decodingFailed`)
+
+Callers depend on `any ShopListServiceProtocol`, never the concrete type.
+
+### Model (`SakeShop`)
+
+`SakeShop` is `Decodable`, `Identifiable` (via `name`), `Sendable`. Notable: `coordinates` decodes from a JSON `[lat, lng]` array using a custom `init(from:)` with an unkeyed container — this is not standard keyed decoding.
+
+## Testing conventions
+
+Unit tests use **Swift Testing**: `import Testing`, `@Suite`, `@Test`, `#expect`, `#require`. UI tests use XCTest.
+
+### Test infrastructure (`SakeShopsTests/Helpers/`)
+
+- **`StubHTTPClient`** (`@unchecked Sendable`) — set `stub.result: Result<Data, NetworkError>` before calling; decodes the data just like the real client.
+- **`StubShopListService`** — set `stub.result: Result<[SakeShop], ShopListError>`.
+- **`MockURLProtocol`** — intercepts `URLSession` requests; set `MockURLProtocol.requestHandler` per test.
+- **`makeSakeShopsData(count:)`** — produces valid `[SakeShop]` JSON for a given count.
+
+**Stubs live only in the test target**, never in the app target.
+
+`URLSessionHTTPClientTests` is `@Suite(.serialized)` because `MockURLProtocol.requestHandler` is static shared state.
