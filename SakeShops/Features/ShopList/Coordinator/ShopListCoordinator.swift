@@ -8,12 +8,19 @@ final class ShopListCoordinator {
         self.app = app
         self.viewModel = ShopListViewModel(service: service)
         viewModel.onShowDetail = { [unowned self] shop in self.showDetail(for: shop) }
-        viewModel.onShowMap = { [unowned self] lat, lon, label in
-            app.pushMap(latitude: lat, longitude: lon, label: label)
-        }
     }
 
-    func showDetail(for shop: SakeShop) {
-        app.push(ShopListRoute.detail(shop))
+    func detailModel(for shop: SakeShop) -> ShopDetailViewModel {
+        ShopDetailViewModel(shop: shop, onShowMap: { [unowned self] in
+            app.pushMap(
+                latitude: shop.coordinates.latitude,
+                longitude: shop.coordinates.longitude,
+                label: shop.name
+            )
+        })
+    }
+
+    private func showDetail(for shop: SakeShop) {
+        app.push(.shopDetail(shop))
     }
 }

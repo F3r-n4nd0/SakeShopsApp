@@ -1,15 +1,15 @@
 import SwiftUI
 
 struct HomeView: View {
-    let coordinator: HomeCoordinator
+    let model: HomeViewModel
 
     var body: some View {
         List {
             Button("Sake Shops") {
-                coordinator.showShopList()
+                model.shopListButtonTapped()
             }
             Button("Map") {
-                coordinator.showMap(latitude: 35.6762, longitude: 139.6503, label: "Tokyo")
+                model.mapButtonTapped()
             }
         }
         .navigationTitle("Home")
@@ -17,5 +17,5 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView(coordinator: HomeCoordinator(app: AppCoordinator()))
+    HomeView(model: HomeCoordinator(app: AppCoordinator()).viewModel)
 }

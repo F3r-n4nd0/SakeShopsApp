@@ -7,7 +7,6 @@ final class ShopListViewModel {
     private(set) var error: ShopListError?
 
     var onShowDetail: (SakeShop) -> Void = { _ in }
-    var onShowMap: (Double, Double, String) -> Void = { _, _, _ in }
 
     private let service: any ShopListServiceProtocol
 
@@ -30,9 +29,4 @@ final class ShopListViewModel {
         onShowDetail(shop)
     }
 
-    func detailModel(for shop: SakeShop) -> ShopDetailViewModel {
-        ShopDetailViewModel(shop: shop, onShowMap: { [self] in
-            onShowMap(shop.coordinates.latitude, shop.coordinates.longitude, shop.name)
-        })
-    }
 }

@@ -2,7 +2,9 @@ import SwiftUI
 
 @Observable
 final class AppCoordinator {
-    var path = NavigationPath()
+    var path: [AppRoute] = [] {
+        didSet { releaseStaleCoordinators() }
+    }
     var sheet: AppSheet?
 
     private var _home: HomeCoordinator?
@@ -21,15 +23,19 @@ final class AppCoordinator {
         return _shopList!
     }
 
+    func mapCoordinator(for location: MapLocation) -> MapCoordinator {
+        MapCoordinator(location: location)
+    }
+
     func pushMap(latitude: Double, longitude: Double, label: String) {
-        push(AppRoute.map(MapLocation(latitude: latitude, longitude: longitude, label: label)))
+        push(.map(MapLocation(latitude: latitude, longitude: longitude, label: label)))
     }
 
     func presentMap(latitude: Double, longitude: Double, label: String) {
         present(.map(MapLocation(latitude: latitude, longitude: longitude, label: label)))
     }
 
-    func push(_ route: some Hashable) {
+    func push(_ route: AppRoute) {
         path.append(route)
     }
 
@@ -39,7 +45,23 @@ final class AppCoordinator {
     }
 
     func popToRoot() {
-        path.removeLast(path.count)
+        path.removeAll()
+    }
+
+    func reset() {
+        path = []
+        _home = nil
+        _shopList = nil
+    }
+
+    private func releaseStaleCoordinators() {
+        let shopListActive = path.contains {
+            switch $0 {
+            case .shopList, .shopDetail: return true
+            case .map: return false
+            }
+        }
+        if !shopListActive { _shopList = nil }
     }
 
     func present(_ sheet: AppSheet) {

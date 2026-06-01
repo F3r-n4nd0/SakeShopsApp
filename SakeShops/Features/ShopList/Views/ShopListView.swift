@@ -24,12 +24,6 @@ struct ShopListView: View {
             }
         }
         .navigationTitle("Sake Shops")
-        .navigationDestination(for: ShopListRoute.self) { route in
-            switch route {
-            case .detail(let shop):
-                ShopDetailView(model: model.detailModel(for: shop))
-            }
-        }
         .task { await model.task() }
     }
 }
