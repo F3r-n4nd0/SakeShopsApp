@@ -8,6 +8,7 @@ SakeShops is an iOS/iPadOS SwiftUI app for discovering sake shops, targeting iOS
 
 - Bundle ID: `fluna.personal.SakeShops`
 - Supported devices: iPhone + iPad (`TARGETED_DEVICE_FAMILY = "1,2"`)
+- Architectural decisions are recorded in `docs/adr/`.
 
 ## Build & Test
 
@@ -39,7 +40,9 @@ Protocol-based, async/await. The central abstraction is `HTTPClient: Sendable` w
 
 - **`Endpoint`** protocol — any request is a type conforming to `Endpoint` (path, method, headers, queryItems, body). Default implementations provided for all optional fields.
 - **`URLSessionHTTPClient`** — real implementation; takes a `baseURL` + optional `URLSession` and `JSONDecoder` at init.
-- **`NetworkError`** — maps HTTP/decoding/connection failures into typed cases: `.statusCode(Int, Data)`, `.decoding(DecodingError)`, `.underlying(any Error)`.
+- **`AuthenticatedHTTPClient`** — decorator that wraps any `HTTPClient` and injects a `Bearer` token header before forwarding the call. Takes a `base: any HTTPClient` and a `tokenProvider: any TokenProvider`. Token injection is done via a private `AuthorizedEndpoint` wrapper, so the wrapped endpoint's existing headers are preserved.
+- **`TokenProvider`** — protocol (`func token() async throws -> String`) for supplying auth tokens; inject a concrete implementation at the composition root.
+- **`NetworkError`** — maps HTTP/decoding/connection failures into typed cases: `.invalidURL`, `.invalidResponse`, `.statusCode(Int, Data)`, `.decoding(DecodingError)`, `.underlying(any Error)`.
 
 ### Feature services
 
@@ -62,9 +65,11 @@ Unit tests use **Swift Testing**: `import Testing`, `@Suite`, `@Test`, `#expect`
 ### Test infrastructure (`SakeShopsTests/Helpers/`)
 
 - **`StubHTTPClient`** (`@unchecked Sendable`) — set `stub.result: Result<Data, NetworkError>` before calling; decodes the data just like the real client.
-- **`StubShopListService`** — set `stub.result: Result<[SakeShop], ShopListError>`.
 - **`MockURLProtocol`** — intercepts `URLSession` requests; set `MockURLProtocol.requestHandler` per test.
+- **`makeURLSessionClient(baseURL:)`** — factory that returns a `URLSessionHTTPClient` backed by `MockURLProtocol`; use this instead of constructing it manually in `URLSessionHTTPClient` tests.
+- **`makeHTTPResponse(url:statusCode:)`** — factory for building `HTTPURLResponse` values in tests.
 - **`makeSakeShopsData(count:)`** — loads `SakeShopsTests/Resources/shops.json` from the test bundle and returns the first `count` entries re-encoded as `Data`.
+- **`StubShopListService`** — lives at `SakeShopsTests/Features/ShopList/Services/`; set `stub.result: Result<[SakeShop], ShopListError>`.
 
 **Stubs live only in the test target**, never in the app target.
 

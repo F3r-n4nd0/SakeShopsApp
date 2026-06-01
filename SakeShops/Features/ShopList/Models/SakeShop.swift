@@ -1,6 +1,6 @@
 import Foundation
 
-struct SakeShop: Decodable, Identifiable, Sendable {
+struct SakeShop: Decodable, Hashable, Identifiable, Sendable {
     var id: String { name }
 
     let name: String
@@ -19,9 +19,14 @@ struct SakeShop: Decodable, Identifiable, Sendable {
 }
 
 extension SakeShop {
-    struct Coordinate: Decodable, Sendable {
+    struct Coordinate: Decodable, Hashable, Sendable {
         let latitude: Double
         let longitude: Double
+
+        init(latitude: Double, longitude: Double) {
+            self.latitude = latitude
+            self.longitude = longitude
+        }
 
         init(from decoder: any Decoder) throws {
             var container = try decoder.unkeyedContainer()
