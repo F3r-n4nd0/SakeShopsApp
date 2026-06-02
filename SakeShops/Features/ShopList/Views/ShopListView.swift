@@ -17,8 +17,10 @@ struct ShopListView: View {
             } else {
                 List {
                     ForEach(model.shops) { shop in
-                        Button(shop.name) {
+                        Button {
                             model.shopRowTapped(shop)
+                        } label: {
+                            ShopRowView(shop: shop)
                         }
                         .foregroundStyle(.primary)
                         .task {
