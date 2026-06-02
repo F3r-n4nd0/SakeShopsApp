@@ -23,9 +23,6 @@ struct ShopListView: View {
                             ShopRowView(shop: shop)
                         }
                         .foregroundStyle(.primary)
-                        .task {
-                            await model.shopRowAppeared(shop)
-                        }
                     }
                     if model.isLoadingMore {
                         HStack {
@@ -40,6 +37,12 @@ struct ShopListView: View {
                             .font(.footnote)
                             .listRowSeparator(.hidden)
                     }
+                }
+                .onScrollGeometryChange(for: Bool.self) { geo in
+                    geo.contentOffset.y + geo.containerSize.height >=
+                        geo.contentSize.height - geo.contentInsets.bottom - 200
+                } action: { _, isNearBottom in
+                    if isNearBottom { Task { await model.loadNextPage() } }
                 }
             }
         }

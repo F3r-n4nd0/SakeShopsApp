@@ -40,7 +40,7 @@ struct ShopDetailView: View {
             }
         }
     }
-
+ 
     private var infoSection: some View {
         Section {
             Text(model.shop.description)

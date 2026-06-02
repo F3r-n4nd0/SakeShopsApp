@@ -6,6 +6,8 @@ final class AppCoordinator {
         didSet { releaseStaleCoordinators() }
     }
 
+    var sheetRoute: AppSheetRoute?
+
     private let shopListService: any ShopListServiceProtocol
     private var _home: HomeCoordinator?
     private var _shopList: ShopListCoordinator?
@@ -28,6 +30,10 @@ final class AppCoordinator {
 
     func push(_ route: AppRoute) {
         path.append(route)
+    }
+
+    func presentSheet(_ route: AppSheetRoute) {
+        sheetRoute = route
     }
 
     func pop() {

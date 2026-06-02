@@ -16,6 +16,12 @@ struct AppCoordinatorView: View {
                         MapCoordinatorView(location: location)
                     }
                 }
+                .sheet(item: $coordinator.sheetRoute) { route in
+                    switch route {
+                    case .map(let location):
+                        MapCoordinatorView(location: location)
+                    }
+                }
         }
     }
 }

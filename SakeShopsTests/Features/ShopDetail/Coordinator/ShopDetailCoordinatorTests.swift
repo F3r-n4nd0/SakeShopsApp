@@ -5,16 +5,16 @@ import Testing
 @MainActor
 struct ShopDetailCoordinatorTests {
 
-    @Test func showOnMapButtonTapped_pushesMapRouteWithShopCoordinates() throws {
+    @Test func showOnMapButtonTapped_setsSheetRouteToMap() throws {
         let app = AppCoordinator(shopListService: StubShopListService())
         let shop = makeSakeShop(coordinates: SakeShop.Coordinate(latitude: 34.6937, longitude: 135.5023))
         let coordinator = ShopDetailCoordinator(app: app, shop: shop)
 
         coordinator.viewModel.showOnMapButtonTapped()
 
-        let route = try #require(app.path.first)
+        let route = try #require(app.sheetRoute)
         guard case .map(let location) = route else {
-            Issue.record("Expected .map route, got \(route)")
+            Issue.record("Expected .map sheet route, got \(route)")
             return
         }
         #expect(location.latitude == 34.6937)

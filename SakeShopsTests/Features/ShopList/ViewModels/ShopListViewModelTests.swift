@@ -92,33 +92,6 @@ struct ShopListViewModelTests {
         #expect(viewModel.shops.count == 5)
     }
 
-    // MARK: - shopRowAppeared()
-
-    @Test func shopRowAppeared_triggersLoad_forLastShop() async throws {
-        let service = MutableShopListService()
-        service.result = .success(makeShops(count: 20))
-        let viewModel = ShopListViewModel(service: service)
-        await viewModel.task()
-
-        service.result = .success([makeSakeShop(name: "Next Page Shop")])
-        let lastShop = try #require(viewModel.shops.last)
-        await viewModel.shopRowAppeared(lastShop)
-
-        #expect(viewModel.shops.count == 21)
-    }
-
-    @Test func shopRowAppeared_doesNothing_forNonLastShop() async throws {
-        let service = MutableShopListService()
-        service.result = .success(makeShops(count: 20))
-        let viewModel = ShopListViewModel(service: service)
-        await viewModel.task()
-
-        service.result = .success([makeSakeShop(name: "Should not appear")])
-        let firstShop = try #require(viewModel.shops.first)
-        await viewModel.shopRowAppeared(firstShop)
-
-        #expect(viewModel.shops.count == 20)
-    }
 }
 
 // MARK: - Test helpers

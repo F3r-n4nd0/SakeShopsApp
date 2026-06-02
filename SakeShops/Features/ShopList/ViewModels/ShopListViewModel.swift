@@ -51,11 +51,6 @@ final class ShopListViewModel {
         } catch {}
     }
 
-    func shopRowAppeared(_ shop: SakeShop) async {
-        guard shop == shops.last else { return }
-        await loadNextPage()
-    }
-
     func shopRowTapped(_ shop: SakeShop) {
         onShowDetail(shop)
     }
