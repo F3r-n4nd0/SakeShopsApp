@@ -46,7 +46,7 @@ struct ShopDetailView: View {
             Text(model.shop.description)
                 .foregroundStyle(.secondary)
             StarRatingView(rating: model.shop.rating)
-            Link(destination: model.shop.googleMapsLink) {
+            Link(destination: model.appleMapsURL) {
                 Label(model.shop.address, systemImage: "mappin.and.ellipse")
             }
         }

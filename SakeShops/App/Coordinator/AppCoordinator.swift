@@ -1,3 +1,4 @@
+// docs/adr/0002-mvvm-c-architecture.md
 import SwiftUI
 
 @Observable

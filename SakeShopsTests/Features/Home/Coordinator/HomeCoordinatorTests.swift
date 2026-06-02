@@ -14,15 +14,15 @@ struct HomeCoordinatorTests {
         #expect(app.path == [.shopList])
     }
 
-    @Test func mapButtonTapped_pushesMapRoute() throws {
+    @Test func mapButtonTapped_setsSheetRouteToMap() throws {
         let app = AppCoordinator(shopListService: StubShopListService())
         let coordinator = HomeCoordinator(app: app)
 
         coordinator.viewModel.mapButtonTapped()
 
-        let route = try #require(app.path.first)
+        let route = try #require(app.sheetRoute)
         guard case .map(let location) = route else {
-            Issue.record("Expected .map route, got \(route)")
+            Issue.record("Expected .map sheet route, got \(route)")
             return
         }
         #expect(location.label == "Tokyo")

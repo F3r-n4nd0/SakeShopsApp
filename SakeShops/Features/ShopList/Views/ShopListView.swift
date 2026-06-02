@@ -41,8 +41,8 @@ struct ShopListView: View {
                 .onScrollGeometryChange(for: Bool.self) { geo in
                     geo.contentOffset.y + geo.containerSize.height >=
                         geo.contentSize.height - geo.contentInsets.bottom - 200
-                } action: { _, isNearBottom in
-                    if isNearBottom { Task { await model.loadNextPage() } }
+                } action: { wasNearBottom, isNearBottom in
+                    if !wasNearBottom, isNearBottom { Task { await model.loadNextPage() } }
                 }
             }
         }

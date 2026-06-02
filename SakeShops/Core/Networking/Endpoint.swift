@@ -1,3 +1,4 @@
+// docs/adr/0004-networking-architecture.md
 import Foundation
 
 protocol Endpoint {

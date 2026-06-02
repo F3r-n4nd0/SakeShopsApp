@@ -1,7 +1,7 @@
 import Foundation
 
 struct SakeShop: Decodable, Hashable, Identifiable, Sendable {
-    var id: String { name }
+    var id: String { name } // docs/adr/0003-sake-shop-identity.md
 
     let name: String
     let description: String

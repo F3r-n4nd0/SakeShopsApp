@@ -1,3 +1,4 @@
+// docs/adr/0006-two-layer-test-strategy.md
 import Testing
 @testable import SakeShops
 
@@ -92,18 +93,4 @@ struct ShopListViewModelTests {
         #expect(viewModel.shops.count == 5)
     }
 
-}
-
-// MARK: - Test helpers
-
-private final class MutableShopListService: ShopListServiceProtocol {
-    var result: Result<[SakeShop], ShopListError> = .success([])
-
-    func fetchShops(page: Int, pageSize: Int) async throws -> [SakeShop] {
-        try result.get()
-    }
-}
-
-private func makeShops(count: Int) -> [SakeShop] {
-    (1...count).map { makeSakeShop(name: "Shop \($0)") }
 }

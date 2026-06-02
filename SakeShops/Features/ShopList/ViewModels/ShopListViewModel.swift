@@ -29,7 +29,7 @@ final class ShopListViewModel {
         do {
             let result = try await service.fetchShops(page: 1, pageSize: pageSize)
             shops = result
-            hasMore = result.count == pageSize
+            hasMore = result.count == pageSize // docs/adr/0007-pagination-strategy.md
         } catch let e as ShopListError {
             error = e
         } catch {}

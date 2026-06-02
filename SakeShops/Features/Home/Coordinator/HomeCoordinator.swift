@@ -11,7 +11,7 @@ final class HomeCoordinator {
             self.app.push(.shopList)
         }
         viewModel.onShowMap = { [unowned self] location in
-            self.app.push(.map(location))
+            self.app.presentSheet(.map(location))
         }
     }
 }

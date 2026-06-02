@@ -12,16 +12,14 @@ struct AppCoordinatorView: View {
                         ShopListCoordinatorView(coordinator: coordinator.shopList)
                     case .shopDetail(let shop):
                         ShopDetailCoordinatorView(app: coordinator, shop: shop)
-                    case .map(let location):
-                        MapCoordinatorView(location: location)
                     }
                 }
-                .sheet(item: $coordinator.sheetRoute) { route in
-                    switch route {
-                    case .map(let location):
-                        MapCoordinatorView(location: location)
-                    }
-                }
+        }
+        .sheet(item: $coordinator.sheetRoute) { route in
+            switch route {
+            case .map(let location):
+                MapCoordinatorView(location: location)
+            }
         }
     }
 }
