@@ -3,6 +3,12 @@
 ## Status
 [Proposed | Accepted | Rejected | Superseded by ADR-XXXX]
 
+## Date
+[YYYY-MM-DD]
+
+## Deciders
+[Name(s) of the people who made this decision]
+
 ## Context & Problem Statement
 [Describe the technical context, the specific problem you are facing, and why a decision needs to be made right now. Keep it brief but informative.]
 
@@ -24,10 +30,10 @@ Chosen option: **[Option Name]**, because [provide the core, deciding reason her
 
 ## Pros and Cons of the Chosen Option
 
-### 🟢 Positive Consequences (Pros)
+### 🟢 Positive Consequences
 * [Benefit 1: What does the team gain by doing this?]
 * [Benefit 2: How does this help the codebase or product lifecycle?]
 
-### 🔴 Negative Consequences (Cons)
+### 🔴 Negative Consequences
 * [Drawback 1: What extra effort, limitation, or complexity is introduced?]
 * [Drawback 2: What must the team keep in mind or fix later because of this choice?]

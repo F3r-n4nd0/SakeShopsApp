@@ -11,6 +11,9 @@ struct HomeView: View {
             Button("Map") {
                 model.mapButtonTapped()
             }
+            Button("Show Detail") {
+                model.showDetailButtonTapped()
+            }
         }
         .navigationTitle("Home")
     }

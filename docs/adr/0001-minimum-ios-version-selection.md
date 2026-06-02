@@ -3,28 +3,45 @@
 ## Status
 Accepted
 
-## The Problem
-We need to choose the lowest iOS version our demo project will support. Since this is a demo, we want to avoid complex SwiftUI fallback hacks while still supporting an older, non-current OS version for realistic testing.
+## Date
+2026-05-31
 
-## The Choice: iOS 18.0
-We are setting our minimum requirement to **iOS 18.0**.
+## Deciders
+Fernando Luna
 
-## Why We Chose It
-1. **Demo Simplification**: It eliminates the need for messy conditional code overrides and legacy compatibility layers.
-2. **Modern Testing**: It allows us to use the new **Swift Testing** framework right out of the box.
-3. **Stable SwiftUI**: It avoids known layout bugs and data syncing crashes present in earlier SwiftUI versions.
+## Context & Problem Statement
 
-## What We Rejected
-* **Latest iOS Version**: Rejected because we want to demonstrate support for an older, non-current operating system.
-* **iOS 17 and Older**: Rejected because early framework bugs would complicate the demo development process.
+We need to choose the lowest iOS version SakeShops will support. The target is a balance between using modern SwiftUI and Swift Testing without workarounds, while still not requiring the absolute latest OS release.
 
-## Trade-offs
+## Decision Drivers
 
-### 🟢 The Good
-* Clean code with zero outdated fallback hacks.
-* Stable data storage layers and great testing tools.
-* Perfect balance for a streamlined demonstration.
+* Avoid conditional code and legacy compatibility layers that complicate a demo project
+* Use Swift Testing out of the box without availability guards
+* Build on a stable SwiftUI release free of known layout and data-sync bugs
 
-### 🔴 The Bad
-* Does not showcase backward compatibility strategies for legacy devices.
-* Cannot use design styles exclusive to the absolute newest operating systems.
+## Considered Options
+
+* **iOS 18.0** — one major version behind the current release at decision time; stable SwiftUI, full Swift Testing support, no fallback hacks required.
+* **Latest iOS version** — would restrict the app to devices on the very newest OS, reducing the realism of the demo.
+* **iOS 17 or older** — would require workarounds for SwiftUI bugs and unavailable framework APIs.
+
+## Decision Outcome
+
+Chosen option: **iOS 18.0**, because it is the oldest version that supports Swift Testing natively and avoids the known SwiftUI instability present in earlier releases, while still representing a non-current OS for demonstration purposes.
+
+### Justification
+
+The latest iOS version was rejected because the project should demonstrate support for a non-current OS, not just the newest one. iOS 17 and older were rejected because early SwiftUI versions have known layout and data-sync issues that would complicate development, and Swift Testing is not available without workarounds on those targets. iOS 18.0 hits the right balance: clean APIs, stable framework behaviour, and no availability guards needed.
+
+## Pros and Cons of the Chosen Option
+
+### 🟢 Positive Consequences
+
+* No conditional code or legacy compatibility layers.
+* Swift Testing and `@Observable` available without restrictions.
+* Stable SwiftUI layout and data storage behaviour.
+
+### 🔴 Negative Consequences
+
+* Does not demonstrate backward compatibility strategies for older devices.
+* Cannot use APIs exclusive to the very latest OS releases.

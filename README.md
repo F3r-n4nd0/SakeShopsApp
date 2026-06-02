@@ -14,16 +14,7 @@ An iOS/iPadOS app for discovering sake shops.
 
 ## Architecture
 
-SakeShops follows **MVVM-C** (Model – View – ViewModel – Coordinator). See [ADR-0002](docs/adr/0002-mvvm-c-architecture.md) for the full rationale.
-
-| Layer | Responsibility |
-|---|---|
-| **Model** | Plain `Decodable`/`Sendable` data types (e.g. `SakeShop`). No UI, no business logic. |
-| **ViewModel** | `@Observable final class`. Owns feature state, drives async work, exposes `onXxx` closure properties for navigation events. |
-| **View** | SwiftUI `View`. Reads from ViewModel, forwards user gestures to ViewModel methods. Never navigates directly. |
-| **Coordinator** | Plain `final class`. Wires ViewModel callbacks to `AppCoordinator.push(_:)` calls. Owns its ViewModel instance. |
-
-`AppCoordinator` is the single navigation root. It holds a `[AppRoute]` path that drives a `NavigationStack` and lazily vends feature coordinators, releasing them when their route leaves the stack.
+SakeShops follows **MVVM-C** (Model – View – ViewModel – Coordinator). ViewModels own feature state and expose event callbacks; Coordinators wire those callbacks to navigation actions. A single root coordinator owns the navigation stack. See [ADR-0002](docs/adr/0002-mvvm-c-architecture.md) for the full rationale.
 
 ## Project structure
 
@@ -46,30 +37,20 @@ Configuration/           Per-environment xcconfig files (Debug, Nightly, Release
 
 ## Networking
 
-The networking layer lives in `SakeShops/Core/Networking/` and is protocol-based, using Swift async/await throughout.
+The networking layer lives in `Core/Networking/` and is protocol-based, using Swift async/await. Any request is a type conforming to `Endpoint`; callers depend on `HTTPClient` and never on the concrete implementation. Feature services map `NetworkError` to a feature-specific error type before exposing results to ViewModels.
 
-### Key types
+To add a new endpoint:
 
-| Type | Role |
-|---|---|
-| `Endpoint` | Protocol — any request conforms to it, declaring `path`, `method`, optional `headers`, `queryItems`, and `body`. Defaults are provided for all optional fields. |
-| `HTTPClient` | Protocol — single generic method `send<T: Decodable>(_ endpoint: some Endpoint) async throws -> T`. Callers depend only on this protocol. |
-| `URLSessionHTTPClient` | Concrete implementation. Takes a `baseURL`, an optional `URLSession`, and an optional `JSONDecoder` at init. Builds the `URLRequest`, executes it, validates the HTTP status, and decodes the response. |
-| `NetworkError` | Typed error enum: `.invalidURL`, `.invalidResponse`, `.statusCode(Int, Data)`, `.decoding(DecodingError)`, `.underlying(any Error)`. |
+1. Create a type conforming to `Endpoint` with the required `path` and `method`.
+2. Define a feature-level service protocol and a concrete service that calls `send(…)` and maps errors.
+3. Inject `any YourServiceProtocol` into the ViewModel — never the concrete type.
 
-### Pagination
+## Prerequisites
 
-`ShopsEndpoint` encodes `page` and `pageSize` as `page` / `page_size` query items. `ShopListServiceProtocol` exposes `fetchShops(page: Int, pageSize: Int)`. Callers are responsible for tracking the current page — the service and endpoint are stateless.
+- Xcode 16 or later
+- macOS Sequoia or later
 
-### Adding a new endpoint
-
-1. Create a type that conforms to `Endpoint` and set `path` and `method`. Override `queryItems`, `headers`, or `body` only when needed.
-2. Define a feature-level service protocol and a concrete service that accepts `any HTTPClient`, calls `send(…)`, and maps `NetworkError` to a feature-specific error type.
-3. Callers inject `any YourServiceProtocol` — never the concrete type.
-
-### Testing
-
-`URLSessionHTTPClient` is tested via `MockURLProtocol`, which intercepts `URLSession` requests without hitting the network. Feature services are tested via `StubHTTPClient`. Both helpers live in the test target only.
+No additional setup is required. The `Configuration/Debug.xcconfig` file is committed and points to the Beeceptor mock API, so the Debug build works out of the box. Nightly and Release builds use separate `BASE_URL` values defined in their respective xcconfig files.
 
 ## Building & testing
 

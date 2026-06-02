@@ -26,10 +26,6 @@ final class AppCoordinator {
         return _shopList!
     }
 
-    func pushMap(latitude: Double, longitude: Double, label: String) {
-        push(.map(MapLocation(latitude: latitude, longitude: longitude, label: label)))
-    }
-
     func push(_ route: AppRoute) {
         path.append(route)
     }

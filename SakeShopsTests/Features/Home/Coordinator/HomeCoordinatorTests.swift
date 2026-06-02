@@ -13,6 +13,20 @@ struct HomeCoordinatorTests {
         #expect(app.path == [.shopList])
     }
 
+    @Test func showDetailButtonTapped_pushesShopDetailRoute() throws {
+        let app = AppCoordinator(shopListService: StubShopListService())
+        let coordinator = HomeCoordinator(app: app)
+
+        coordinator.viewModel.showDetailButtonTapped()
+
+        let route = try #require(app.path.first)
+        guard case .shopDetail(let shop) = route else {
+            Issue.record("Expected .shopDetail route, got \(route)")
+            return
+        }
+        #expect(shop.name == "Hasegawa Saketen")
+    }
+
     @Test func mapButtonTapped_pushesMapRoute() throws {
         let app = AppCoordinator(shopListService: StubShopListService())
         let coordinator = HomeCoordinator(app: app)

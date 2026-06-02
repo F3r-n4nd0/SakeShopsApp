@@ -8,11 +8,11 @@ final class ShopDetailCoordinator {
         self.app = app
         viewModel = ShopDetailViewModel(shop: shop)
         viewModel.onShowMap = {
-            app.pushMap(
+            app.push(.map(MapLocation(
                 latitude: shop.coordinates.latitude,
                 longitude: shop.coordinates.longitude,
                 label: shop.name
-            )
+            )))
         }
     }
 }
