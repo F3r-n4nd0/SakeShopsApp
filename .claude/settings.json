@@ -1,15 +1,35 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(xcodebuild *)",
-      "Bash(git status)",
-      "Bash(git log *)",
-      "Bash(git diff *)",
-      "Bash(git show *)",
-      "Bash(find *)",
-      "Bash(ls *)",
-      "Bash(swift *)",
-      "Bash(swiftc *)"
-    ]
-  }
+    "permissions":
+    {
+        "allow":
+        [
+            "Bash(xcodebuild *)",
+            "Bash(git status)",
+            "Bash(git log *)",
+            "Bash(git diff *)",
+            "Bash(git show *)",
+            "Bash(find *)",
+            "Bash(ls *)",
+            "Bash(swift *)",
+            "Bash(swiftc *)"
+        ]
+    },
+    "hooks":
+    {
+        "PostToolUse":
+        [
+            {
+                "matcher": "Edit|Write",
+                "hooks":
+                [
+                    {
+                        "type": "command",
+                        "command": "file=$(jq -r '.tool_input.file_path // empty' 2>/dev/null); if echo \"$file\" | grep -qE '(View\\.swift$|/Views/.*\\.swift$)'; then printf '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"SwiftUI view %s was just edited. Please invoke the swiftui-pro skill to review it for best practices.\"}}\\n' \"$file\"; fi",
+                        "timeout": 10,
+                        "statusMessage": "Checking for SwiftUI view changes..."
+                    }
+                ]
+            }
+        ]
+    }
 }
