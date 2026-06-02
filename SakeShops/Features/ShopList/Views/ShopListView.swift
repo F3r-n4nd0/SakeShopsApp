@@ -15,11 +15,26 @@ struct ShopListView: View {
                     description: Text(error.localizedDescription)
                 )
             } else {
-                List(model.shops) { shop in
-                    Button(shop.name) {
-                        model.shopRowTapped(shop)
+                List {
+                    ForEach(model.shops) { shop in
+                        Button(shop.name) {
+                            model.shopRowTapped(shop)
+                        }
+                        .foregroundStyle(.primary)
+                        .task {
+                            if shop == model.shops.last {
+                                await model.loadNextPage()
+                            }
+                        }
                     }
-                    .foregroundStyle(.primary)
+                    if model.isLoadingMore {
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                            Spacer()
+                        }
+                        .listRowSeparator(.hidden)
+                    }
                 }
             }
         }

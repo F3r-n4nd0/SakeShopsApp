@@ -5,9 +5,8 @@ final class ShopDetailViewModel {
     let shop: SakeShop
     var onShowMap: () -> Void = {}
 
-    init(shop: SakeShop, onShowMap: @escaping () -> Void) {
+    init(shop: SakeShop) {
         self.shop = shop
-        self.onShowMap = onShowMap
     }
 
     func showOnMapButtonTapped() {

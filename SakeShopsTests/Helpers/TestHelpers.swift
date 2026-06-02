@@ -59,6 +59,22 @@ func makeHTTPResponse(
     HTTPURLResponse(url: url, statusCode: statusCode, httpVersion: nil, headerFields: nil)!
 }
 
+func makeSakeShop(
+    name: String = "Test Shop",
+    coordinates: SakeShop.Coordinate = SakeShop.Coordinate(latitude: 35.0, longitude: 139.0)
+) -> SakeShop {
+    SakeShop(
+        name: name,
+        description: "A test sake shop",
+        picture: nil,
+        rating: 4.5,
+        address: "1-1 Test Street",
+        coordinates: coordinates,
+        googleMapsLink: URL(string: "https://maps.google.com")!,
+        website: URL(string: "https://example.com")!
+    )
+}
+
 func makeSakeShopsData(count: Int = 1) -> Data {
     let url = Bundle(for: MockURLProtocol.self).url(forResource: "shops", withExtension: "json")!
     let all = try! JSONSerialization.jsonObject(with: Data(contentsOf: url)) as! [[String: Any]]

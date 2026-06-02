@@ -34,6 +34,21 @@ xcodebuild test -project SakeShops.xcodeproj -scheme SakeShops \
 
 ## Architecture
 
+### Navigation (Coordinator pattern)
+
+Navigation is driven by a single `NavigationStack` owned by `AppCoordinatorView`, with `AppCoordinator` (@Observable) managing the path as `[AppRoute]`.
+
+- **`AppRoute`** — `enum` of all push destinations (`.shopList`, `.shopDetail(SakeShop)`, `.map(MapLocation)`). All `navigationDestination` switching lives in `AppCoordinatorView`.
+- **`AppCoordinator`** — owns the path and lazily vends child coordinators (`home`, `shopList`). Calls `releaseStaleCoordinators()` on every `path` change to nil out coordinators whose route is no longer in the stack.
+- **Feature coordinators** (`HomeCoordinator`, `ShopListCoordinator`, `ShopDetailCoordinator`, `MapCoordinator`) — plain `final class`, not `@Observable`. Each holds an `unowned` back-reference to `AppCoordinator` and creates its ViewModel at init, wiring up the VM's `onXxx` callbacks to `app.push(_:)` calls.
+- **CoordinatorViews** — thin `View` structs that hold a coordinator as `@State` (when constructing it, e.g. `ShopDetailCoordinatorView`) or as a `let` (when receiving it, e.g. `ShopListCoordinatorView`), then pass the coordinator's `viewModel` into the feature `View`.
+
+To add a new navigation destination: add a case to `AppRoute`, add a `navigationDestination` branch in `AppCoordinatorView`, create a `XxxCoordinator` + `XxxCoordinatorView`, and add a lazy accessor on `AppCoordinator` if the coordinator needs to survive across multiple views.
+
+### ViewModels
+
+ViewModels are `@Observable final class`. Navigation actions are expressed as callback properties (`var onShowDetail: (SakeShop) -> Void = { _ in }`) that coordinators overwrite at init. Views only call named ViewModel methods (e.g. `shopRowTapped(_:)`, `showOnMapButtonTapped()`); they never call `onXxx` closures directly.
+
 ### Networking layer (`Core/Networking/`)
 
 Protocol-based, async/await. The central abstraction is `HTTPClient: Sendable` with a single generic `send<T: Decodable>(_ endpoint: some Endpoint) async throws -> T` method.
@@ -56,7 +71,11 @@ Callers depend on `any ShopListServiceProtocol`, never the concrete type.
 
 ### Model (`SakeShop`)
 
-`SakeShop` is `Decodable`, `Identifiable` (via `name`), `Sendable`. Notable: `coordinates` decodes from a JSON `[lat, lng]` array using a custom `init(from:)` with an unkeyed container — this is not standard keyed decoding.
+`SakeShop` is `Decodable`, `Identifiable` (via `name` as `id`), `Sendable`. Notable: `coordinates` decodes from a JSON `[lat, lng]` array using a custom `init(from:)` with an unkeyed container — this is not standard keyed decoding.
+
+### Configuration
+
+`BASE_URL` is defined per build configuration in `Configuration/*.xcconfig` and read at runtime via `Config.baseURL` from `Info.plist`. Debug points to a Beeceptor mock; Release points to the production API. Never hardcode base URLs in source — add a new xcconfig entry and read it through `Config`.
 
 ## Testing conventions
 

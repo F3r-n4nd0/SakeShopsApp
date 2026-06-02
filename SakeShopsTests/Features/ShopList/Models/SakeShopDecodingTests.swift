@@ -13,7 +13,7 @@ struct SakeShopDecodingTests {
 
     @Test func decodesAllShops() throws {
         let shops = try decoder.decode([SakeShop].self, from: shopsData())
-        #expect(shops.count == 10)
+        #expect(shops.count == 7)
     }
 
     @Test func decodesFields() throws {

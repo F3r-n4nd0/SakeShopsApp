@@ -12,12 +12,36 @@ An iOS/iPadOS app for discovering sake shops.
 | Swift version | 5.0 |
 | Bundle identifier | `fluna.personal.SakeShops` |
 
+## Architecture
+
+SakeShops follows **MVVM-C** (Model – View – ViewModel – Coordinator). See [ADR-0002](docs/adr/0002-mvvm-c-architecture.md) for the full rationale.
+
+| Layer | Responsibility |
+|---|---|
+| **Model** | Plain `Decodable`/`Sendable` data types (e.g. `SakeShop`). No UI, no business logic. |
+| **ViewModel** | `@Observable final class`. Owns feature state, drives async work, exposes `onXxx` closure properties for navigation events. |
+| **View** | SwiftUI `View`. Reads from ViewModel, forwards user gestures to ViewModel methods. Never navigates directly. |
+| **Coordinator** | Plain `final class`. Wires ViewModel callbacks to `AppCoordinator.push(_:)` calls. Owns its ViewModel instance. |
+
+`AppCoordinator` is the single navigation root. It holds a `[AppRoute]` path that drives a `NavigationStack` and lazily vends feature coordinators, releasing them when their route leaves the stack.
+
 ## Project structure
 
 ```
 SakeShops/               App source (SwiftUI)
+  App/                   Entry point, AppCoordinator, AppRoute, Config
+  Core/Networking/       HTTPClient stack (Endpoint, URLSessionHTTPClient, AuthenticatedHTTPClient)
+  Features/              One folder per screen (Home, ShopList, ShopDetail, Map)
+    <Feature>/
+      Coordinator/       XxxCoordinator + XxxCoordinatorView
+      ViewModels/        XxxViewModel (@Observable)
+      Views/             SwiftUI views
+      Models/            Feature-local data types (if any)
+      Services/          XxxServiceProtocol + XxxService + XxxEndpoint (if any)
 SakeShopsTests/          Unit tests (Swift Testing)
 SakeShops.xcodeproj/     Xcode project
+docs/adr/                Architecture Decision Records
+Configuration/           Per-environment xcconfig files (Debug, Nightly, Release)
 ```
 
 ## Networking

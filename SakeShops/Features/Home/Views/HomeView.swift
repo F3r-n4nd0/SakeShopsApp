@@ -17,5 +17,5 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView(model: HomeCoordinator(app: AppCoordinator()).viewModel)
+    HomeView(model: HomeViewModel())
 }

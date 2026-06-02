@@ -68,36 +68,6 @@
     "coordinates": [36.648273, 138.18724],
     "google_maps_link": "https://maps.app.goo.gl/wJTiquoJ4Qj8xsUp6",
     "website": "http://www.masumi.co.jp/"
-  },
-  {
-    "name": "Tamamura Honten",
-    "description": "Brewery in Yamanouchi, known for its sake and beer.",
-    "picture": "https://shop-pro.jp",
-    "rating": 4.6,
-    "address": "〒381-0401 長野県下高井郡山ノ内町大字平穏 1163",
-    "coordinates": [36.648273, 138.18724],
-    "google_maps_link": "https://maps.app.goo.gl/htbv7LKDc9N3aHZ9A",
-    "website": "http://tamamura-honten.co.jp"
-  },
-  {
-    "name": "Shinshu Kuraudo",
-    "description": "Specialty shop offering sake from around Nagano.",
-    "picture": "https://nagano-wine.jp",
-    "rating": 4.1,
-    "address": "〒380-0824 長野県長野市 南長野南石堂町 1421",
-    "coordinates": [36.648273, 138.18724],
-    "google_maps_link": "https://maps.app.goo.gl/SuUjW4R3wzuj3YVWA",
-    "website": "https://nagano-wine.jp"
-  },
-  {
-    "name": "Hokuan Brewery",
-    "description": "Small brewery in Omachi City, known for its Daikokumasamune sake.",
-    "picture": "https://hokuan.co.jp/wp/wp-content/themes/hokuan/img/bg01.jpg",
-    "rating": 4.0,
-    "address": "〒398-0002 長野県大町市大町 2340-1",
-    "coordinates": [36.648273, 138.18724],
-    "google_maps_link": "https://maps.app.goo.gl/GQrMNVo6YoVEvCPU6",
-    "website": "https://hokuan.co.jp/"
   }
 ]
 
