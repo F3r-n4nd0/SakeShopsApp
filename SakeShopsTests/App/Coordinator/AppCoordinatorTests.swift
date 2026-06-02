@@ -84,12 +84,12 @@ struct AppCoordinatorTests {
         #expect(first === app.shopList)
     }
 
-    @Test func reset_recyclesHomeCoordinator() {
+    @Test func reset_preservesHomeCoordinator() {
         let app = AppCoordinator(shopListService: StubShopListService())
         let first = app.home
 
         app.reset()
 
-        #expect(first !== app.home)
+        #expect(first === app.home)
     }
 }

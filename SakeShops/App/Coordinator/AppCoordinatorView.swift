@@ -1,11 +1,7 @@
 import SwiftUI
 
 struct AppCoordinatorView: View {
-    @State private var coordinator: AppCoordinator
-
-    init(coordinator: AppCoordinator) {
-        _coordinator = State(initialValue: coordinator)
-    }
+    @Bindable var coordinator: AppCoordinator
 
     var body: some View {
         NavigationStack(path: $coordinator.path) {

@@ -41,7 +41,6 @@ final class AppCoordinator {
 
     func reset() {
         path = []
-        _home = nil
     }
 
     private func releaseStaleCoordinators() {

@@ -10,11 +10,8 @@ final class HomeCoordinator {
         viewModel.onShowShopList = { [unowned self] in
             self.app.push(.shopList)
         }
-        viewModel.onShowMap = { [unowned self] lat, lon, label in
-            self.app.push(.map(MapLocation(latitude: lat, longitude: lon, label: label)))
-        }
-        viewModel.onShowDetail = { [unowned self] shop in
-            self.app.push(.shopDetail(shop))
+        viewModel.onShowMap = { [unowned self] location in
+            self.app.push(.map(location))
         }
     }
 }

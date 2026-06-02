@@ -8,7 +8,6 @@ struct HomeView: View {
             VStack(spacing: 16) {
                 HomeMenuItemView(icon: "storefront", title: "Sake Shops", action: model.shopListButtonTapped)
                 HomeMenuItemView(icon: "map", title: "Map", action: model.mapButtonTapped)
-                HomeMenuItemView(icon: "info.circle", title: "Show Detail", action: model.showDetailButtonTapped)
             }
             .padding()
         }

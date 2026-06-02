@@ -10,6 +10,10 @@ SakeShops is an iOS/iPadOS SwiftUI app for discovering sake shops, targeting iOS
 - Supported devices: iPhone + iPad (`TARGETED_DEVICE_FAMILY = "1,2"`)
 - Architectural decisions are recorded in `docs/adr/`.
 
+## README
+
+Keep `README.md` brief. It should only contain what a new contributor needs to get started: requirements, how to run the app, and a high-level project structure overview. Do not explain implementation details inline — link to the relevant ADR in `docs/adr/` instead. If a section is growing, move the detail into a new ADR and replace it with a link.
+
 ## Build & Test
 
 ```bash
@@ -45,9 +49,15 @@ Navigation is driven by a single `NavigationStack` owned by `AppCoordinatorView`
 
 To add a new navigation destination: add a case to `AppRoute`, add a `navigationDestination` branch in `AppCoordinatorView`, create a `XxxCoordinator` + `XxxCoordinatorView`, and add a lazy accessor on `AppCoordinator` if the coordinator needs to survive across multiple views.
 
+**Coordinator back-references** — Feature coordinators hold `private unowned let app: AppCoordinator`, never `weak`. The coordinator's lifetime is bounded by `AppCoordinator` owning it, so `unowned` is safe. Leaf coordinators with no outbound navigation (e.g. `MapCoordinator`) need no back-reference at all.
+
+**`@State` vs `let` in CoordinatorViews** — Use `@State` when the CoordinatorView constructs the coordinator itself (ephemeral destinations instantiated inside `navigationDestination`, e.g. `ShopDetailCoordinatorView`, `MapCoordinatorView`). Use `let` when `AppCoordinator` owns the coordinator's lifetime and passes it in (persistent coordinators, e.g. `HomeCoordinatorView`, `ShopListCoordinatorView`).
+
 ### ViewModels
 
-ViewModels are `@Observable final class`. Navigation actions are expressed as callback properties (`var onShowDetail: (SakeShop) -> Void = { _ in }`) that coordinators overwrite at init. Views only call named ViewModel methods (e.g. `shopRowTapped(_:)`, `showOnMapButtonTapped()`); they never call `onXxx` closures directly.
+ViewModels are `@Observable @MainActor final class`. Navigation actions are expressed as callback properties (`var onShowDetail: (SakeShop) -> Void = { _ in }`) that coordinators overwrite at init. Views only call named ViewModel methods (e.g. `shopRowTapped(_:)`, `showOnMapButtonTapped()`); they never call `onXxx` closures directly. Because ViewModels are `@MainActor`, test suites that instantiate them must also be annotated `@MainActor`.
+
+Views receive their ViewModel as a plain `let model:` stored property — never `@Bindable` or `@EnvironmentObject`. `@Observable` is sufficient for SwiftUI to track changes.
 
 ### Networking layer (`Core/Networking/`)
 
@@ -75,11 +85,17 @@ Callers depend on `any ShopListServiceProtocol`, never the concrete type.
 
 ### Configuration
 
-`BASE_URL` is defined per build configuration in `Configuration/*.xcconfig` and read at runtime via `Config.baseURL` from `Info.plist`. Debug points to a Beeceptor mock; Release points to the production API. Never hardcode base URLs in source — add a new xcconfig entry and read it through `Config`.
+`BASE_URL` is defined per build configuration in `Configuration/*.xcconfig` and read at runtime via `Config.baseURL` from `Info.plist`. Three configurations exist: Debug → Beeceptor mock, Nightly → `nightly-api.sakeshops.com`, Release → production API. Never hardcode base URLs in source — add a new xcconfig entry and read it through `Config`.
 
 ## Testing conventions
 
 Unit tests use **Swift Testing**: `import Testing`, `@Suite`, `@Test`, `#expect`, `#require`.
+
+Test names follow `methodName_condition_expectedOutcome` (e.g. `task_setsShops_onSuccess`, `push_appendsRouteToPath`).
+
+**Two-layer test strategy:**
+- *ViewModel tests* — wire an `onXxx` callback to a capture variable, call the ViewModel method, assert the capture. These tests verify that the right callback fires with the right value; they know nothing about navigation.
+- *Coordinator tests* — construct the coordinator with a real `AppCoordinator`, call a ViewModel method, assert `app.path`. These tests verify the navigation wiring only. Never assert navigation routing inside a ViewModel test.
 
 ### Test infrastructure (`SakeShopsTests/Helpers/`)
 
@@ -88,7 +104,9 @@ Unit tests use **Swift Testing**: `import Testing`, `@Suite`, `@Test`, `#expect`
 - **`makeURLSessionClient(baseURL:)`** — factory that returns a `URLSessionHTTPClient` backed by `MockURLProtocol`; use this instead of constructing it manually in `URLSessionHTTPClient` tests.
 - **`makeHTTPResponse(url:statusCode:)`** — factory for building `HTTPURLResponse` values in tests.
 - **`makeSakeShopsData(count:)`** — loads `SakeShopsTests/Resources/shops.json` from the test bundle and returns the first `count` entries re-encoded as `Data`.
-- **`StubShopListService`** — lives at `SakeShopsTests/Features/ShopList/Services/`; set `stub.result: Result<[SakeShop], ShopListError>`.
+- **`StubShopListService`** — lives at `SakeShopsTests/Features/ShopList/Services/`; set `stub.result: Result<[SakeShop], ShopListError>`. Used in coordinator tests where a fixed result is sufficient.
+
+For ViewModel tests that need to mutate the result mid-test (e.g. to simulate pagination), define a private `final class` conforming to the service protocol locally in the test file rather than extending `StubShopListService`.
 
 **Stubs live only in the test target**, never in the app target.
 
