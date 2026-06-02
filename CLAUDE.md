@@ -16,7 +16,7 @@ Keep `README.md` brief. It should only contain what a new contributor needs to g
 
 ## CI
 
-The workflow at `.github/workflows/build.yml` runs on every push to `main`. It builds on `macos-15` using `generic/platform=iOS Simulator` — a device-agnostic destination that compiles for the simulator SDK without requiring any specific simulator to be present. Code signing is disabled (`CODE_SIGN_IDENTITY=""`, `CODE_SIGNING_REQUIRED=NO`, `CODE_SIGNING_ALLOWED=NO`) since no certificates are available in the runner environment. The build status badge in `README.md` reflects the latest run.
+The workflow at `.github/workflows/build.yml` runs on every push to `main`. It builds on `macos-15` using `generic/platform=iOS Simulator` — a device-agnostic destination that compiles for the simulator SDK without requiring any specific simulator to be present. `ARCHS='arm64'` is required because `macos-15` runners are Apple Silicon and do not ship the x86_64 simulator SDK; without it, xcodebuild attempts a multi-arch build and the x86_64 steps fail. Code signing is disabled (`CODE_SIGN_IDENTITY=""`, `CODE_SIGNING_REQUIRED=NO`, `CODE_SIGNING_ALLOWED=NO`) since no certificates are available in the runner environment. The build status badge in `README.md` reflects the latest run.
 
 ## Build & Test
 

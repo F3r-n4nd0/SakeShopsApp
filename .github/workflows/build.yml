@@ -14,5 +14,6 @@ jobs:
           xcodebuild -project SakeShops.xcodeproj \
             -scheme SakeShops \
             -destination 'generic/platform=iOS Simulator' \
+            ARCHS='arm64' \
             CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO \
             build
