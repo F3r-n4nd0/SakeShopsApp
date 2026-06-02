@@ -1,3 +1,5 @@
+[![Build](https://github.com/F3r-n4nd0/SakeShopsApp/actions/workflows/build.yml/badge.svg)](https://github.com/F3r-n4nd0/SakeShopsApp/actions/workflows/build.yml)
+
 # SakeShops
 
 An iOS/iPadOS app for discovering sake shops.
@@ -7,6 +9,10 @@ An iOS/iPadOS app for discovering sake shops.
 - Xcode 16+
 - macOS Sequoia+
 - iOS 18.0+ deployment target ([ADR-0001](docs/adr/0001-minimum-ios-version-selection.md))
+
+## CI
+
+Every merge to `main` triggers a build via GitHub Actions (`.github/workflows/build.yml`). Status is shown in the badge above.
 
 ## Getting started
 

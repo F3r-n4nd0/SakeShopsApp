@@ -14,6 +14,12 @@ SakeShops is an iOS/iPadOS SwiftUI app for discovering sake shops, targeting iOS
 
 Keep `README.md` brief. It should only contain what a new contributor needs to get started: requirements, how to run the app, and a high-level project structure overview. Do not explain implementation details inline — link to the relevant ADR in `docs/adr/` instead. If a section is growing, move the detail into a new ADR and replace it with a link.
 
+## CI
+
+The workflow at `.github/workflows/build.yml` runs on every push to `main` (i.e. after a merge). It builds on `macos-15` using an `iPhone 16` simulator with code signing disabled (`CODE_SIGN_IDENTITY=""`, `CODE_SIGNING_REQUIRED=NO`, `CODE_SIGNING_ALLOWED=NO`) — no certificates are available in the runner environment. The build status badge in `README.md` reflects the latest run.
+
+When writing CI-related changes: keep the simulator name in the workflow in sync with what `macos-15` runners actually ship (currently iPhone 16). Do not use `iPhone 17` in the workflow — that simulator is not available on GitHub-hosted runners.
+
 ## Build & Test
 
 ```bash
