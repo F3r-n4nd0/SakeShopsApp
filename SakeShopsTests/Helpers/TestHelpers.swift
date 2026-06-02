@@ -61,13 +61,14 @@ func makeHTTPResponse(
 
 func makeSakeShop(
     name: String = "Test Shop",
+    rating: Double = 4.5,
     coordinates: SakeShop.Coordinate = SakeShop.Coordinate(latitude: 35.0, longitude: 139.0)
 ) -> SakeShop {
     SakeShop(
         name: name,
         description: "A test sake shop",
         picture: nil,
-        rating: 4.5,
+        rating: rating,
         address: "1-1 Test Street",
         coordinates: coordinates,
         googleMapsLink: URL(string: "https://maps.google.com")!,
