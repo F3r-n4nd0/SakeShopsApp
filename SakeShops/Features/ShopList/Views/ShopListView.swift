@@ -45,3 +45,4 @@ struct ShopListView: View {
         .task { await model.task() }
     }
 }
+

@@ -16,6 +16,7 @@ final class HomeViewModel {
     }
 
     func showDetailButtonTapped() {
+        //TODO: hard code shop for testing
         let demo = SakeShop(
             name: "Hasegawa Saketen",
             description: "One of Tokyo's most respected sake retailers.",

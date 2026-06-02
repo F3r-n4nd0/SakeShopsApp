@@ -3,9 +3,8 @@ import SwiftUI
 struct AppCoordinatorView: View {
     @State private var coordinator: AppCoordinator
 
-    init() {
-        let client = URLSessionHTTPClient(baseURL: Config.baseURL)
-        _coordinator = State(initialValue: AppCoordinator(shopListService: ShopListService(client: client)))
+    init(coordinator: AppCoordinator) {
+        _coordinator = State(initialValue: coordinator)
     }
 
     var body: some View {
