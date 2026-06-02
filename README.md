@@ -30,6 +30,13 @@ Configuration/      Per-environment xcconfig files (Debug, Nightly, Release)
 docs/adr/           Architecture Decision Records
 ```
 
+## Features
+
+- **Home** — Main menu to navigate to the shop list or the map.
+- **Shop List** — Paginated list of sake shops fetched from the API; infinite scroll loads the next page as you approach the bottom.
+- **Shop Detail** — Full details for a selected shop: photo, description, star rating, address (taps into Apple Maps), website link, and a shortcut to view the shop on the in-app map.
+- **Map** — Map sheet showing a pin at the shop's coordinates.
+
 ## Architecture
 
 MVVM-C — ViewModels own feature state, Coordinators handle navigation. See [ADR-0002](docs/adr/0002-mvvm-c-architecture.md).

@@ -16,9 +16,7 @@ Keep `README.md` brief. It should only contain what a new contributor needs to g
 
 ## CI
 
-The workflow at `.github/workflows/build.yml` runs on every push to `main` (i.e. after a merge). It builds on `macos-15` using an `iPhone 16` simulator with code signing disabled (`CODE_SIGN_IDENTITY=""`, `CODE_SIGNING_REQUIRED=NO`, `CODE_SIGNING_ALLOWED=NO`) — no certificates are available in the runner environment. The build status badge in `README.md` reflects the latest run.
-
-When writing CI-related changes: keep the simulator name in the workflow in sync with what `macos-15` runners actually ship (currently iPhone 16). Do not use `iPhone 17` in the workflow — that simulator is not available on GitHub-hosted runners.
+The workflow at `.github/workflows/build.yml` runs on every push to `main`. It builds on `macos-15` using `generic/platform=iOS Simulator` — a device-agnostic destination that compiles for the simulator SDK without requiring any specific simulator to be present. Code signing is disabled (`CODE_SIGN_IDENTITY=""`, `CODE_SIGNING_REQUIRED=NO`, `CODE_SIGNING_ALLOWED=NO`) since no certificates are available in the runner environment. The build status badge in `README.md` reflects the latest run.
 
 ## Build & Test
 
