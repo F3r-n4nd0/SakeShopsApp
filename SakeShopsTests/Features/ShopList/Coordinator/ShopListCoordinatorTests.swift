@@ -2,6 +2,7 @@ import Testing
 @testable import SakeShops
 
 @Suite("ShopListCoordinator")
+@MainActor
 struct ShopListCoordinatorTests {
 
     @Test func shopRowTapped_pushesShopDetailRoute() {

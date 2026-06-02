@@ -22,9 +22,7 @@ struct ShopListView: View {
                         }
                         .foregroundStyle(.primary)
                         .task {
-                            if shop == model.shops.last {
-                                await model.loadNextPage()
-                            }
+                            await model.shopRowAppeared(shop)
                         }
                     }
                     if model.isLoadingMore {
@@ -34,6 +32,11 @@ struct ShopListView: View {
                             Spacer()
                         }
                         .listRowSeparator(.hidden)
+                    } else if let error = model.loadMoreError {
+                        Text(error.localizedDescription)
+                            .foregroundStyle(.secondary)
+                            .font(.footnote)
+                            .listRowSeparator(.hidden)
                     }
                 }
             }

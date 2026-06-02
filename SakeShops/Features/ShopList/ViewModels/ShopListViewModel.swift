@@ -1,11 +1,13 @@
 import Foundation
 
 @Observable
+@MainActor
 final class ShopListViewModel {
     private(set) var shops: [SakeShop] = []
     private(set) var isLoading = false
     private(set) var isLoadingMore = false
     private(set) var error: ShopListError?
+    private(set) var loadMoreError: ShopListError?
     private(set) var hasMore = true
 
     var onShowDetail: (SakeShop) -> Void = { _ in }
@@ -36,6 +38,7 @@ final class ShopListViewModel {
     func loadNextPage() async {
         guard !isLoadingMore, !isLoading, hasMore else { return }
         isLoadingMore = true
+        loadMoreError = nil
         defer { isLoadingMore = false }
         let nextPage = currentPage + 1
         do {
@@ -43,7 +46,14 @@ final class ShopListViewModel {
             shops += result
             currentPage = nextPage
             hasMore = result.count == pageSize
+        } catch let e as ShopListError {
+            loadMoreError = e
         } catch {}
+    }
+
+    func shopRowAppeared(_ shop: SakeShop) async {
+        guard shop == shops.last else { return }
+        await loadNextPage()
     }
 
     func shopRowTapped(_ shop: SakeShop) {

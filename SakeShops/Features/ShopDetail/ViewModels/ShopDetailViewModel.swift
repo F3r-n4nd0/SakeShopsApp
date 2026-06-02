@@ -1,6 +1,7 @@
 import Foundation
 
 @Observable
+@MainActor
 final class ShopDetailViewModel {
     let shop: SakeShop
     var onShowMap: () -> Void = {}

@@ -7,8 +7,8 @@ final class ShopDetailCoordinator {
     init(app: AppCoordinator, shop: SakeShop) {
         self.app = app
         viewModel = ShopDetailViewModel(shop: shop)
-        viewModel.onShowMap = {
-            app.push(.map(MapLocation(
+        viewModel.onShowMap = { [unowned self] in
+            self.app.push(.map(MapLocation(
                 latitude: shop.coordinates.latitude,
                 longitude: shop.coordinates.longitude,
                 label: shop.name

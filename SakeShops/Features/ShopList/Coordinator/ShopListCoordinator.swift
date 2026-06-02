@@ -7,10 +7,8 @@ final class ShopListCoordinator {
     init(app: AppCoordinator, service: any ShopListServiceProtocol) {
         self.app = app
         self.viewModel = ShopListViewModel(service: service)
-        viewModel.onShowDetail = { [unowned self] shop in self.showDetail(for: shop) }
-    }
-
-    private func showDetail(for shop: SakeShop) {
-        app.push(.shopDetail(shop))
+        viewModel.onShowDetail = { [unowned self] shop in
+            self.app.push(.shopDetail(shop))
+        }
     }
 }

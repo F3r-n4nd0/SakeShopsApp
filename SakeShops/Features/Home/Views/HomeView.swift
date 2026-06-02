@@ -4,21 +4,21 @@ struct HomeView: View {
     let model: HomeViewModel
 
     var body: some View {
-        List {
-            Button("Sake Shops") {
-                model.shopListButtonTapped()
+        ScrollView {
+            VStack(spacing: 16) {
+                HomeMenuItemView(icon: "storefront", title: "Sake Shops", action: model.shopListButtonTapped)
+                HomeMenuItemView(icon: "map", title: "Map", action: model.mapButtonTapped)
+                HomeMenuItemView(icon: "info.circle", title: "Show Detail", action: model.showDetailButtonTapped)
             }
-            Button("Map") {
-                model.mapButtonTapped()
-            }
-            Button("Show Detail") {
-                model.showDetailButtonTapped()
-            }
+            .padding()
         }
-        .navigationTitle("Home")
+        .background(Color("MenuBackground"))
+        .navigationTitle("SakeShops")
     }
 }
 
 #Preview {
-    HomeView(model: HomeViewModel())
+    NavigationStack {
+        HomeView(model: HomeViewModel())
+    }
 }

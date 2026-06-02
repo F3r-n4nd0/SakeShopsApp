@@ -2,6 +2,7 @@ import Testing
 @testable import SakeShops
 
 @Suite("ShopDetailCoordinator")
+@MainActor
 struct ShopDetailCoordinatorTests {
 
     @Test func showOnMapButtonTapped_pushesMapRouteWithShopCoordinates() throws {
