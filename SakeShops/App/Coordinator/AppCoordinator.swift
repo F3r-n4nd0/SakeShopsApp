@@ -17,12 +17,12 @@ final class AppCoordinator {
         self.shopListService = shopListService
     }
 
-    var home: HomeCoordinator {
+    @MainActor var home: HomeCoordinator {
         if _home == nil { _home = HomeCoordinator(app: self) }
         return _home!
     }
 
-    var shopList: ShopListCoordinator {
+    @MainActor var shopList: ShopListCoordinator {
         if _shopList == nil {
             _shopList = ShopListCoordinator(app: self, service: shopListService)
         }

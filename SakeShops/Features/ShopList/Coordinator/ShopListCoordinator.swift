@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 final class ShopListCoordinator {
     private unowned let app: AppCoordinator
     let viewModel: ShopListViewModel

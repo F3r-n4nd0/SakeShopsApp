@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 final class HomeCoordinator {
     private unowned let app: AppCoordinator
     let viewModel: HomeViewModel

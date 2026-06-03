@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 final class MapCoordinator {
     let viewModel: MapViewModel
 

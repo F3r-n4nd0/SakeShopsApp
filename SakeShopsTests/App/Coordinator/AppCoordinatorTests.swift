@@ -2,6 +2,7 @@ import Testing
 @testable import SakeShops
 
 @Suite("AppCoordinator")
+@MainActor
 struct AppCoordinatorTests {
 
     // MARK: - Path management

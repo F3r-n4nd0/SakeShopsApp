@@ -16,7 +16,7 @@ Keep `README.md` brief. It should only contain what a new contributor needs to g
 
 ## CI
 
-The workflow at `.github/workflows/build.yml` runs on every push to `main`. It builds on `macos-15` using `generic/platform=iOS Simulator` — a device-agnostic destination that compiles for the simulator SDK without requiring any specific simulator to be present. `ARCHS='arm64'` is required because `macos-15` runners are Apple Silicon and do not ship the x86_64 simulator SDK; without it, xcodebuild attempts a multi-arch build and the x86_64 steps fail. Code signing is disabled (`CODE_SIGN_IDENTITY=""`, `CODE_SIGNING_REQUIRED=NO`, `CODE_SIGNING_ALLOWED=NO`) since no certificates are available in the runner environment. The build status badge in `README.md` reflects the latest run.
+The workflow at `.github/workflows/build.yml` runs on every push to `main`. It builds on `macos-26` with Xcode 26.5 explicitly selected (`sudo xcode-select -s /Applications/Xcode_26.5.app`) to avoid ambiguity if the runner image ships multiple versions. It uses `generic/platform=iOS Simulator` — a device-agnostic destination that compiles for the simulator SDK without requiring any specific simulator to be present. `ARCHS='arm64'` is required because `macos-26` runners are Apple Silicon and do not ship the x86_64 simulator SDK; without it, xcodebuild attempts a multi-arch build and the x86_64 steps fail. Code signing is disabled (`CODE_SIGN_IDENTITY=""`, `CODE_SIGNING_REQUIRED=NO`, `CODE_SIGNING_ALLOWED=NO`) since no certificates are available in the runner environment. The build status badge in `README.md` reflects the latest run.
 
 ## Build & Test
 
@@ -48,7 +48,7 @@ Navigation is driven by a single `NavigationStack` owned by `AppCoordinatorView`
 
 - **`AppRoute`** — `enum` of all push destinations (`.shopList`, `.shopDetail(SakeShop)`, `.map(MapLocation)`). All `navigationDestination` switching lives in `AppCoordinatorView`.
 - **`AppCoordinator`** — owns the path and lazily vends child coordinators (`home`, `shopList`). Calls `releaseStaleCoordinators()` on every `path` change to nil out coordinators whose route is no longer in the stack.
-- **Feature coordinators** (`HomeCoordinator`, `ShopListCoordinator`, `ShopDetailCoordinator`, `MapCoordinator`) — plain `final class`, not `@Observable`. Each holds an `unowned` back-reference to `AppCoordinator` and creates its ViewModel at init, wiring up the VM's `onXxx` callbacks to `app.push(_:)` calls.
+- **Feature coordinators** (`HomeCoordinator`, `ShopListCoordinator`, `ShopDetailCoordinator`, `MapCoordinator`) — `@MainActor final class`, not `@Observable`. `@MainActor` is required because their `init` calls `@MainActor`-isolated ViewModel initializers and mutates `@MainActor`-isolated callback properties. Each holds an `unowned` back-reference to `AppCoordinator` and creates its ViewModel at init, wiring up the VM's `onXxx` callbacks to `app.push(_:)` calls.
 - **CoordinatorViews** — thin `View` structs that hold a coordinator as `@State` (when constructing it, e.g. `ShopDetailCoordinatorView`) or as a `let` (when receiving it, e.g. `ShopListCoordinatorView`), then pass the coordinator's `viewModel` into the feature `View`.
 
 To add a new navigation destination: add a case to `AppRoute`, add a `navigationDestination` branch in `AppCoordinatorView`, create a `XxxCoordinator` + `XxxCoordinatorView`, and add a lazy accessor on `AppCoordinator` if the coordinator needs to survive across multiple views.
